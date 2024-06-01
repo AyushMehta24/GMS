@@ -31,3 +31,33 @@ model garageMaster {
 
   @@map("garage_master")
 }
+
+model userAuth {
+  id            Int    @id @default(autoincrement())
+  email         String @unique
+  hash_password String
+  user          user?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  is_deleted Boolean   @default(false)
+
+  @@map("user_auth")
+}
+
+model user {
+  id          Int    @id @default(autoincrement())
+  name        String
+  profile_pic String
+  userAuth_id Int    @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  is_deleted Boolean   @default(false)
+
+  userAuth userAuth @relation(fields: [userAuth_id], references: [id])
+
+  @@map("users")
+}
