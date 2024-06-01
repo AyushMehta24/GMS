@@ -34,10 +34,11 @@ export const createGarage = async (req: Request, res: Response) => {
   }
 };
 
-export const getGarage = async (req: Request, res: Response) => {
+export const getGarageList = async (req: Request, res: Response) => {
   try {
     const garages:garageMasterT[] = await prisma.garageMaster.findMany({
       select: {
+        id:true,
         name: true,
         contact: true,
         email: true,
@@ -47,8 +48,11 @@ export const getGarage = async (req: Request, res: Response) => {
         description: true,
         status: true,
       },
+      where:{
+        is_deleted : false
+      }
     });
-    res.json(garages);
+    res.json({list:garages});
   } catch (err: any) {
     res.status(500).send("Something went wrong: " + err.message);
   }
