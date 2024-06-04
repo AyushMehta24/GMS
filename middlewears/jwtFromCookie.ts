@@ -18,6 +18,14 @@ const jwtFromCookie = (req: Request, res: Response, next: NextFunction) => {
           .status(401)
           .json({ message: "Unauthorized", success: false });
       }
+
+      const expTime:number = decoded.exp * 1000;
+      if (expTime < Date.now()) {
+        return res
+          .status(401)
+          .json({ message: "Session Expired", success: false });
+      }
+
       const userData: { id: string; role: string } | null =
         await prisma.user.findUnique({
           where: {
@@ -41,3 +49,6 @@ const jwtFromCookie = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default jwtFromCookie;
+
+1717496209639
+1717499670

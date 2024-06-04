@@ -63,7 +63,6 @@ export const getGarageList = async (req: Request, res: Response) => {
 export const initialuserInfo = async (req: Request, res: Response) => {
   try {
     const user: userT = (await decodeToken(req, res)) as userT;
-    console.log(user, "uswerinfo");
     const initialData: initialData | null = await prisma.user.findUnique({
       where: {
         id: user.id,
