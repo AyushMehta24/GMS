@@ -11,7 +11,7 @@ const router = express();
 router.use("/auth", auth);
 
 //owner
-router.use("/", jwtFromCookie, isOwner, owner);
+router.use("/owner", jwtFromCookie, isOwner, owner);
 
 //customer
 
