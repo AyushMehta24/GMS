@@ -18,11 +18,10 @@ const jwtFromCookie = (req: Request, res: Response, next: NextFunction) => {
           .status(401)
           .json({ message: "Unauthorized", success: false });
       }
-      const uid: string = decoded.id;
       const userData: { id: string; role: string } | null =
         await prisma.user.findUnique({
           where: {
-            id: uid,
+            id: decoded.id,
             role: decoded.role,
           },
           select: {

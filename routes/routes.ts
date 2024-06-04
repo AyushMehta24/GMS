@@ -1,16 +1,18 @@
 import express from "express";
 import { getGarageList } from "../controllers/garageMasterControllers";
-import { login, register } from "../controllers/authControllers";
 import passport from "passport";
 import jwtFromCookie from "../middlewears/jwtFromCookie";
-import { loginValidate, registerValidate } from "../middlewears/authValidtion";
+import isOwner from "../middlewears/isOwner";
+import auth from "./auth";
+import owner from "./owner";
 const router = express();
 
 //auth
-router.post("/auth/register",registerValidate, register);
-router.post("/auth/login",loginValidate, login);
+router.use("/auth", auth);
 
-//garageMaster
-router.get("/garagelist", jwtFromCookie, getGarageList);
+//owner
+router.use("/", jwtFromCookie, isOwner, owner);
+
+//customer
 
 export default router;
