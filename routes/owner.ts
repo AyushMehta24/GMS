@@ -1,11 +1,13 @@
 import express from "express";
-import { getGarageList,initialuserInfo } from "../controllers/garageMasterControllers";
+import { initialuserInfo } from "../controllers/garageMasterControllers";
+import garage from "./garages";
 const owner = express();
 
 //initial User Information
-owner.get("/userinfo" , initialuserInfo)
+owner.get("/userinfo", initialuserInfo);
 
 //Garage List Information
-owner.get("/garagelist", getGarageList);
+
+owner.use("/garage", garage);
 
 export default owner;

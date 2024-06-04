@@ -8,6 +8,8 @@ const prisma = new PrismaClient();
 
 export const createGarage = async (req: Request, res: Response) => {
   try {
+    const user: userT = (await decodeToken(req, res)) as userT;
+
     const {
       name,
       contact,
@@ -28,9 +30,14 @@ export const createGarage = async (req: Request, res: Response) => {
         close_time: close_time,
         description: description,
         status: status,
+        users: {
+          connect: {
+            id: user.id,
+          },
+        },
       },
     });
-    res.send("User inserted successfully");
+    res.send("Garage inserted successfully");
   } catch (err: any) {
     res.status(500).send("Something went wrong: " + err.message);
   }
@@ -77,6 +84,56 @@ export const initialuserInfo = async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({ userinfo: initialData });
+  } catch (err: any) {
+    res.status(500).send("Something went wrong: " + err.message);
+  }
+};
+
+export const addMember = async (req: Request, res: Response) => {
+  try {
+    const { ownerId, garageId }: { ownerId: string; garageId: string } =
+      req.body;
+
+    const validOwner: { id: string } | null = await prisma.user.findUnique({
+      where: {
+        id: ownerId,
+        is_deleted: false,
+        role:"1"
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const validGarage: { id: string } | null =
+      await prisma.garageMaster.findUnique({
+        where: {
+          id: garageId,
+          is_deleted: false,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+    if (validOwner && validGarage) {
+      await prisma.garageMaster.update({
+        where :{
+          id : garageId
+        },
+        data:{
+          users :{
+            connect : {
+              id : ownerId
+            }
+          }
+        }
+      })
+      res.send("Owner added successfully");
+
+    } else {
+      return res.status(500).send("Data is not valid");
+    }
   } catch (err: any) {
     res.status(500).send("Something went wrong: " + err.message);
   }
