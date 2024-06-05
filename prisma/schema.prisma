@@ -23,7 +23,11 @@ model garageMaster {
   close_time  String
   description String
   status      Boolean @default(true)
-  users       user[]
+  longitude   Decimal
+  latitude    Decimal
+  user_id     String
+
+  users user[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

@@ -16,6 +16,8 @@ export const createGarageValidate = (
     close_time,
     description,
     status,
+    latitude,
+    longitude,
   } = req.body;
 
   const data: createGarageT = {
@@ -27,6 +29,8 @@ export const createGarageValidate = (
     close_time,
     description,
     status,
+    latitude,
+    longitude,
   };
 
   const result = Joi.object().keys({
@@ -41,6 +45,8 @@ export const createGarageValidate = (
     close_time: Joi.string().min(8).max(8).required(),
     description: Joi.string().min(0).max(100).required(),
     status: Joi.boolean().required(),
+    longitude: Joi.number().precision(8).required(),
+    latitude: Joi.number().precision(8).required(),
   });
 
   const valid = result.validate(data);

@@ -7,4 +7,6 @@ export interface createGarageT {
   close_time: string;
   description: string;
   status: boolean;
+  latitude : number;
+  longitude :number
 }

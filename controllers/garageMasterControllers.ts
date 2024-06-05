@@ -19,7 +19,7 @@ export const createGarage = async (req: Request, res: Response) => {
       open_time,
       close_time,
       description,
-      status,
+      status,latitude,longitude
     }: createGarageT = req.body;
 
     await prisma.garageMaster.create({
@@ -32,6 +32,9 @@ export const createGarage = async (req: Request, res: Response) => {
         close_time: close_time,
         description: description,
         status: status,
+        latitude : latitude,
+        longitude : longitude,
+        user_id : user.id,
         users: {
           connect: {
             id: user.id,
