@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { garageMasterT } from "../types/garageMasterT";
 import { decodeToken } from "../utils/decodeToken";
 import { initialData, userT } from "../dto/userTypes";
+import { createGarageT } from "../dto/garageTypes";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,8 @@ export const createGarage = async (req: Request, res: Response) => {
       close_time,
       description,
       status,
-    } = req.body;
+    }: createGarageT = req.body;
+
     await prisma.garageMaster.create({
       data: {
         name: name,
@@ -45,7 +47,18 @@ export const createGarage = async (req: Request, res: Response) => {
 
 export const getGarageList = async (req: Request, res: Response) => {
   try {
+    const user: userT = (await decodeToken(req, res)) as userT;
+
+    //find all garages of particular owner
     const garages: garageMasterT[] = await prisma.garageMaster.findMany({
+      where: {
+        is_deleted: false,
+        users: {
+          some: {
+            id: user.id,
+          },
+        },
+      },
       select: {
         id: true,
         name: true,
@@ -56,11 +69,16 @@ export const getGarageList = async (req: Request, res: Response) => {
         close_time: true,
         description: true,
         status: true,
-      },
-      where: {
-        is_deleted: false,
+        users: {
+          select: {
+            id: true,
+            name: true,
+            profile_pic: true,
+          },
+        },
       },
     });
+
     res.json({ list: garages });
   } catch (err: any) {
     res.status(500).send("Something went wrong: " + err.message);
@@ -98,7 +116,7 @@ export const addMember = async (req: Request, res: Response) => {
       where: {
         id: ownerId,
         is_deleted: false,
-        role:"1"
+        role: "1",
       },
       select: {
         id: true,
@@ -118,19 +136,18 @@ export const addMember = async (req: Request, res: Response) => {
 
     if (validOwner && validGarage) {
       await prisma.garageMaster.update({
-        where :{
-          id : garageId
+        where: {
+          id: garageId,
         },
-        data:{
-          users :{
-            connect : {
-              id : ownerId
-            }
-          }
-        }
-      })
+        data: {
+          users: {
+            connect: {
+              id: ownerId,
+            },
+          },
+        },
+      });
       res.send("Owner added successfully");
-
     } else {
       return res.status(500).send("Data is not valid");
     }
