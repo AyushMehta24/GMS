@@ -13,6 +13,9 @@ owner.use("/garage", garage);
 
 //Dashboard
 
-owner.get("/dashboard" , dashboardData)
+owner.get("/statistics" , dashboardData)
+owner.get("/analytics" , dashboardData)
+owner.get("/upcoming" , dashboardData)
+owner.get("/revenue" , dashboardData)
 
 export default owner;
