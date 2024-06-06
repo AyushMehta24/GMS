@@ -34,7 +34,7 @@ export const createGarage = async (req: Request, res: Response) => {
         status: status,
         latitude : latitude,
         longitude : longitude,
-        user_id : user.id,
+        owner_id : user.id,
         users: {
           connect: {
             id: user.id,

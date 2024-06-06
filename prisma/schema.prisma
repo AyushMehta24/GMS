@@ -25,7 +25,7 @@ model garageMaster {
   status      Boolean @default(true)
   longitude   Decimal
   latitude    Decimal
-  user_id     String
+  owner_id    String
 
   users user[]
 
